@@ -26,7 +26,10 @@ if (product.category === 'seeds') {
 } else if (product.category === 'otherseeds') {
     body.classList.add('otherseeds-page');
 }
+
+
     if (product) {
+        injectProductSchema(product, productId);
         // ===== 1. SEO (для Google та соцмереж) =====
         document.title = `${product.name} — купити в Homestead`;
         
@@ -40,9 +43,11 @@ if (product.category === 'seeds') {
         if (ogTitle) ogTitle.content = product.name;
         
         const ogImage = document.getElementById('og-image');
-        if (ogImage && product.images && product.images[0]) {
-            ogImage.content = product.images[0];
-        }
+if (ogImage && product.images && product.images[0]) {
+    // Додаємо базову адресу до назви картинки
+    const baseUrl = "https://homesteadinferno.github.io/homestead-sauces-and-seeds/";
+    ogImage.content = baseUrl + "images/" + product.images[0];
+}
         // ===== 11. ПЕРЕВІРКА НАЯВНОСТІ (Out of Stock логіка) =====
         const actionZone = document.getElementById('cart-action-zone');
         if (actionZone && product.inStock === false) {
@@ -59,25 +64,36 @@ if (product.category === 'seeds') {
 `;
         }
 
-        // JSON-LD для Google (структуровані дані)
-        const schemaData = {
-            "@context": "https://schema.org/",
-            "@type": "Product",
-            "name": product.name,
-            "image": product.images,
-            "description": product.description.replace(/<[^>]*>/g, ''),
-            "offers": {
-                "@type": "Offer",
-                "priceCurrency": "UAH",
-                "price": product.price,
-                "availability": "https://schema.org/InStock"
-            }
-        };
-        
-        const schemaScript = document.createElement('script');
-        schemaScript.type = 'application/ld+json';
-        schemaScript.textContent = JSON.stringify(schemaData);
-        document.head.appendChild(schemaScript);
+        function injectProductSchema(product, id) {
+    const baseUrl = "https://homesteadinferno.github.io/homestead-sauces-and-seeds/"; // Зміни на свій домен
+    
+    const schema = {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": product.name,
+        "image": product.images.filter(img => img !== "").map(img => baseUrl + "images/" + img),
+        "description": product.description.replace(/<br>/g, ' '), // Прибираємо теги
+        "sku": id.toUpperCase(),
+        "brand": {
+            "@type": "Brand",
+            "name": "Gapka's Homestead Inferno"
+        },
+        "offers": {
+            "@type": "Offer",
+            "url": window.location.href,
+            "priceCurrency": "UAH",
+            "price": product.price,
+            "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            "itemCondition": "https://schema.org/NewCondition"
+        }
+    };
+
+    // Створюємо елемент скрипта
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(schema);
+    document.head.appendChild(script);
+}
 
         // ===== 2. ЗАПОВНЮЄМО ОСНОВНУ ІНФОРМАЦІЮ =====
         document.getElementById('p-name').innerText = product.name;

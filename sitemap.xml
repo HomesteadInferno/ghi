@@ -1,89 +1,193 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
-  <!-- Головна сторінка -->
+  <!-- ═══════════════════════════════════════════════════════════════
+       ГОЛОВНА СТОРІНКА
+  ═══════════════════════════════════════════════════════════════ -->
   <url>
     <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/index.html</loc>
-    <lastmod>2026-02-05</lastmod>
+    <lastmod>2026-03-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/homesteadlogo.svg</image:loc>
+      <image:caption>Gapka's Homestead Inferno - Гострі соуси та насіння</image:caption>
+    </image:image>
   </url>
   
-  <!-- Сторінка насіння -->
-  <url>
-    <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/seedsandseedlings.html</loc>
-    <lastmod>2026-02-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
+  <!-- ═══════════════════════════════════════════════════════════════
+       КАТЕГОРІЇ
+  ═══════════════════════════════════════════════════════════════ -->
   
-  <!-- Сторінка соусів -->
+  <!-- Гострі соуси -->
   <url>
     <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/sauces.html</loc>
-    <lastmod>2026-02-05</lastmod>
+    <lastmod>2026-03-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-
-<!-- Сторінка соусів -->
+  
+  <!-- Насіння суперхотів -->
+  <url>
+    <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/seedsandseedlings.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Інше насіння -->
   <url>
     <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/otherseeds.html</loc>
-    <lastmod>2026-02-05</lastmod>
+    <lastmod>2026-03-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
+  <!-- ═══════════════════════════════════════════════════════════════
+       ТОВАРИ (СОУСИ)
+  ═══════════════════════════════════════════════════════════════ -->
+  
+  <!-- Fire Dragon Sauce -->
+  <url>
+    <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/product.html?id=fire-dragon-sauce</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       ТОВАРИ (НАСІННЯ SUPERHOTS)
+  ═══════════════════════════════════════════════════════════════ -->
+  
+  <!-- Carolina Reaper Red -->
+  <url>
+    <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/product.html?id=reaper</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Habanero Red Savina -->
+  <url>
+    <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/product.html?id=habaneroredsavina</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Habanero Dominica Red -->
+  <url>
+    <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/product.html?id=habanerodominicared</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Ghost Pepper (Bhut Jolokia) -->
+  <url>
+    <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/product.html?id=ghostpepper</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Trinidad Scorpion -->
+  <url>
+    <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/product.html?id=trinidadscorpion</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 7 Pot Douglah -->
+  <url>
+    <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/product.html?id=7potdouglah</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Chocolate Bhutlah -->
+  <url>
+    <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/product.html?id=chocolatebhutlah</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       КОРИСНИЙ КОНТЕНТ
+  ═══════════════════════════════════════════════════════════════ -->
+  
+  <!-- Інструкція з вирощування -->
+  <url>
+    <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/growing-guide.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- QR сторінка -->
+  <url>
+    <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/qrpage.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
   
   <!-- FAQ -->
   <url>
     <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/faq.html</loc>
-    <lastmod>2026-02-05</lastmod>
+    <lastmod>2026-03-10</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.6</priority>
   </url>
   
   <!-- Privacy Policy -->
   <url>
     <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/privacy.html</loc>
-    <lastmod>2026-02-05</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.3</priority>
-  </url>
-  
-  <!-- Сторінки товарів -->
-  <url>
-    <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/product.html?id=habaneroredsavina</loc>
-    <lastmod>2026-02-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <url>
-    <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/product.html?id=reaper</loc>
-    <lastmod>2026-02-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <url>
-    <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/product.html?id=habanerodominicared</loc>
-    <lastmod>2026-02-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <url>
-    <loc>https://homesteadinferno.github.io/homestead-sauces-and-seeds/product.html?id=fire-dragon-sauce</loc>
-    <lastmod>2026-02-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
   </url>
 
 </urlset>
 
 <!-- 
-ВАЖЛИВО: 
-1. Замініть "ВАШ-ДОМЕН" на ваш реальний домен GitHub Pages
-2. Додавайте нові товари в цей файл коли створюєте їх
-3. Оновлюйте <lastmod> дату коли змінюєте сторінки
+════════════════════════════════════════════════════════════════
+ІНСТРУКЦІЯ:
+════════════════════════════════════════════════════════════════
+
+1. Оновлюй <lastmod> дату коли редагуєш сторінки (формат: YYYY-MM-DD)
+
+2. Додавай нові товари за шаблоном:
+   <url>
+     <loc>URL_ТОВАРУ</loc>
+     <lastmod>ДАТА</lastmod>
+     <changefreq>monthly</changefreq>
+     <priority>0.8</priority>
+   </url>
+
+3. Priority (пріоритет):
+   - 1.0 = Головна сторінка
+   - 0.9 = Категорії
+   - 0.8 = Товари
+   - 0.7 = Корисний контент (блог, інструкції)
+   - 0.5-0.6 = Додаткові сторінки
+   - 0.3 = Технічні сторінки (privacy)
+
+4. Changefreq (частота змін):
+   - daily = щодня (новини, блог)
+   - weekly = щотижня (головна, акції)
+   - monthly = щомісяця (товари, FAQ)
+   - yearly = щороку (privacy, terms)
+
+5. Після змін перевір sitemap:
+   https://www.xml-sitemaps.com/validate-xml-sitemap.html
+
+6. Відправ Google:
+   - Google Search Console → Sitemaps → Add sitemap
+   - URL: https://homesteadinferno.github.io/homestead-sauces-and-seeds/sitemap.xml
 -->

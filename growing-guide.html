@@ -386,6 +386,67 @@
             color: var(--text-secondary);
             line-height: 1.7;
         }
+        .cta-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .cta-btn {
+            display: block;
+            padding: 16px 24px;
+            text-align: center;
+            text-decoration: none;
+            font-family: 'Zilla Slab', serif;
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            border-radius: 2px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-primary {
+            background: linear-gradient(to bottom, var(--flame-orange), var(--burnt-sienna));
+            color: #fff;
+            border: 2px solid var(--flame-orange);
+            box-shadow: 
+                0 4px 15px rgba(255,69,0,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+        }
+
+        .cta-primary::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent);
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .cta-primary:hover::before {
+            opacity: 1;
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255,69,0,0.6);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: var(--gold-seal);
+            border: 2px solid rgba(255,215,0,0.3);
+        }
+
+        .cta-secondary:hover {
+            background: rgba(255,215,0,0.08);
+            border-color: var(--gold-seal);
+        }
+
 
         /* FOOTER */
         .footer {
@@ -457,7 +518,7 @@
         <div class="header">
             <div class="pepper-icon">🌶️</div>
             <h1>Інструкція з вирощування</h1>
-            <a href="https://homesteadinferno.github.io/homestead-sauces-and-seeds/index.html" class="header-logo-link">
+            <a href="https://homesteadinferno.github.io/ghi/index.html" class="header-logo-link">
                 <img src="homesteadlogo.svg" alt="Homestead Inferno" class="header-logo">
             </a>
         </div>
@@ -495,7 +556,7 @@
                 <div class="species-examples">
                     <div class="examples-label">Приклади сортів:</div>
                     <div class="examples-list">
-                        Carolina Reaper, Trinidad Scorpion, Ghost Pepper (Bhut Jolokia), Habanero, Scotch Bonnet, 7 Pot, Chocolate Bhutlah
+                        Carolina Reaper, Trinidad Scorpion, Ghost Pepper (Bhut Jolokia), Habanero, Scotch Bonnet, 7 Pot, Chocolate Bhutlah і інші
                     </div>
                 </div>
             </div>
@@ -539,7 +600,7 @@
                     <div class="step-title">Посів (глибина 0.5-1 см)</div>
                 </div>
                 <div class="step-content">
-                    Легкий ґрунт: торф + перліт (2:1). Температура 26-30°C — критично важлива! Накрийте плівкою. Сходи: 7-21 день (у Chinense найдовше серед усіх видів).
+                    Легкий ґрунт. Температура 26-30°C — критично важлива! Можна накрийти плівкою, або просто стежити за тим, щоб поверхня грунту не пересихала. Сходи: 7-21 день (у Chinense найдовше серед усіх видів).
                 </div>
             </div>
 
@@ -549,7 +610,7 @@
                     <div class="step-title">Розсада (16+ годин світла)</div>
                 </div>
                 <div class="step-content">
-                    Після сходів — максимум світла! Фітолампа 16-18 год/день. Поливайте помірно. Пікіруйте при 2-4 листках у горщики 1-2 л. Chinense любить простір для коріння!
+                    Після сходів — максимум світла! Можна досвічувати 16-18 год/день. Поливайте помірно, НЕ переливайте, це найстрашніше, краще недолити, аніж перелити. Пікіруйте при 2-4 листках у горщики 1-2 л. Chinense любить простір для коріння!
                 </div>
             </div>
 
@@ -559,17 +620,17 @@
                     <div class="step-title">Висадка (після заморозків, травень)</div>
                 </div>
                 <div class="step-content">
-                    Відстань 70-80 см (рослини великі!). Місце: максимум сонця, захист від вітру. Додайте компост + доломітове борошно. pH ґрунту: 6.0-6.8.
+                    Відстань 70-80 см (рослини великі!). Місце: максимум сонця, захист від вітру. Додайте компост + кальцій.
                 </div>
             </div>
 
             <div class="step">
                 <div class="step-header">
                     <div class="step-number">5</div>
-                    <div class="step-title">Підживлення (NPK 5-10-10)</div>
+                    <div class="step-title">Підживлення</div>
                 </div>
                 <div class="step-content">
-                    Перші 2 місяці — азот для зелені. Під час цвітіння — калій і фосфор! Підживлюйте кожні 2 тижні. Підв'яжіть стебло — рослина висока і важка від плодів.
+                    Перші 2 місяці — азот для зелені. Під час цвітіння — калій і фосфор, мінімум азоту (але не зовсім 0)! Підживлюйте кожні 2 тижні. Підв'яжіть стебло — рослина висока і важка від плодів.
                 </div>
             </div>
 
@@ -587,7 +648,6 @@
                 <div class="info-box-title">💡 Секрети для Chinense</div>
                 <div class="info-box-content">
                     <strong>Калійний стрес:</strong> За 10-14 днів до збору врожаю почніть поливати рідше. Це змусить рослину виробляти більше капсаїцину для захисту.<br><br>
-                    <strong>Епсомська сіль:</strong> 1 ч.л. на 1л води, обприскати листя раз на місяць. Магній покращує фотосинтез — плоди будуть більші.<br><br>
                     <strong>Перший плід — видаліть!</strong> Перший плід забирає багато сил. Видаліть його, щоб рослина дала більше плодів потім.
                 </div>
             </div>
@@ -612,7 +672,7 @@
                 <div class="species-examples">
                     <div class="examples-label">Приклади сортів:</div>
                     <div class="examples-list">
-                        Jalapeño, Serrano, Cayenne, Hungarian Wax, Shishito, Padrón, Болгарський перець, Poblano/Ancho
+                        Jalapeño, Serrano, Cayenne, Hungarian Wax, Shishito, Padrón, Болгарський перець, Poblano/Ancho і інші
                     </div>
                 </div>
             </div>
@@ -629,7 +689,7 @@
                     </div>
                     <div class="char-item">
                         <div class="char-label">Температура проростання</div>
-                        <div class="char-value">22-28°C</div>
+                        <div class="char-value">20-28°C</div>
                     </div>
                     <div class="char-item">
                         <div class="char-label">Висота</div>
@@ -646,7 +706,7 @@
                     <div class="step-title">Підготовка (лютий-березень)</div>
                 </div>
                 <div class="step-content">
-                    Замочіть на 12 годин у теплій воді. Annuum проростає швидко — часто без замочування! Але замочування збільшує відсоток схожості до 95%.
+                    Annuum проростає швидко — часто без замочування, можна дати старт методом paper towel, проростити на мокрій серветці.
                 </div>
             </div>
 
@@ -656,7 +716,7 @@
                     <div class="step-title">Посів (глибина 0.5 см)</div>
                 </div>
                 <div class="step-content">
-                    Універсальний ґрунт для розсади. Температура 22-28°C. Накрийте склом або плівкою. Сходи: 5-10 днів (найшвидше серед усіх видів!).
+                    Універсальний ґрунт для розсади. Температура 22-28°C. Накрийте склом або плівкою. Сходи: 3-10 днів (найшвидше серед усіх видів!).
                 </div>
             </div>
 
@@ -721,7 +781,7 @@
                 <div class="species-examples">
                     <div class="examples-label">Приклади сортів:</div>
                     <div class="examples-list">
-                        Aji Amarillo, Aji Lemon Drop, Aji Panca, Aji Crystal, Aji Charapita, Bishop's Crown, Peppadew
+                        Aji Amarillo, Aji Lemon Drop, Aji Panca, Aji Crystal, Aji Charapita, Bishop's Crown, Peppadew і інші
                     </div>
                 </div>
             </div>
@@ -755,7 +815,7 @@
                     <div class="step-title">Підготовка (лютий)</div>
                 </div>
                 <div class="step-content">
-                    Замочіть на 12-24 години. Baccatum має тверду оболонку — замочування обов'язкове! Можна злегка потерти наждачкою (скарифікація).
+                    Можна проростити на паперовій серветці (метод Paper towel)
                 </div>
             </div>
 
@@ -765,7 +825,7 @@
                     <div class="step-title">Посів (глибина 0.5-1 см)</div>
                 </div>
                 <div class="step-content">
-                    Легкий ґрунт, 24-28°C, висока вологість. Накрийте плівкою щільно! Сходи: 10-18 днів. Терплячість потрібна — Baccatum не поспішає.
+                    Легкий ґрунт, 24-28°C, висока вологість. Сходи: 10-18 днів. Терплячість потрібна — Baccatum не поспішає.
                 </div>
             </div>
 
@@ -775,7 +835,7 @@
                     <div class="step-title">Розсада (16 годин світла)</div>
                 </div>
                 <div class="step-content">
-                    Багато світла! Baccatum витягуються у тіні. Фітолампа обов'язкова. Пікіруйте у горщики 1-2л. Ростуть швидко після пікірування.
+                    Багато світла! Baccatum витягуються у тіні. Ростуть швидко після пікірування.
                 </div>
             </div>
 
@@ -792,7 +852,7 @@
             <div class="step">
                 <div class="step-header">
                     <div class="step-number">5</div>
-                    <div class="step-title">Підживлення (NPK 5-10-10)</div>
+                    <div class="step-title">Підживлення</div>
                 </div>
                 <div class="step-content">
                     Помірне підживлення. Калій під час плодоношення підкреслює цитрусовий смак! Полив регулярний, але без застою води.
@@ -865,7 +925,7 @@
                     <div class="step-title">Підготовка (січень)</div>
                 </div>
                 <div class="step-content">
-                    Замочіть на 48 годин (довше ніж інші види!). Змінюйте воду кожні 12 годин. Pubescens проростає ДУЖЕ довго — запасіться терпінням!
+                    Замочіть на 48 годин (довше ніж інші види!). Pubescens проростає ДУЖЕ довго — запасіться терпінням!
                 </div>
             </div>
 
@@ -902,7 +962,7 @@
             <div class="step">
                 <div class="step-header">
                     <div class="step-number">5</div>
-                    <div class="step-title">Підживлення (NPK 10-10-10)</div>
+                    <div class="step-title">Підживлення</div>
                 </div>
                 <div class="step-content">
                     Багато органіки! Компост, перегній. Pubescens — багаторічні рослини у природі, тому люблять поживний ґрунт. Полив регулярний.
@@ -924,7 +984,6 @@
                 <div class="info-box-content">
                     <strong>НЕ перегрівайте!</strong> Це єдиний вид перців, який НЕ любить спеку. При 30°C+ ростуть погано. Ідеальна температура: 18-25°C.<br><br>
                     <strong>Багаторічник:</strong> Можна тримати у великому горщику і заносити на зиму в прохолодне місце (+10-15°C). Житиме кілька років!<br><br>
-                    <strong>Чорне насіння:</strong> Якщо насіння не чорне — це не Pubescens! Перевіряйте при купівлі.
                 </div>
             </div>
 
@@ -982,7 +1041,7 @@
                     <div class="step-title">Підготовка (березень)</div>
                 </div>
                 <div class="step-content">
-                    Замочіть на 12 годин. Frutescens проростає добре і без замочування, але це підвищує схожість до 90%.
+                    Frutescens проростає добре і без замочування, можна або сіяти одразу, або проростити методом вологої серветки
                 </div>
             </div>
 
@@ -1019,7 +1078,7 @@
             <div class="step">
                 <div class="step-header">
                     <div class="step-number">5</div>
-                    <div class="step-title">Підживлення (NPK 5-10-10)</div>
+                    <div class="step-title">Підживлення</div>
                 </div>
                 <div class="step-content">
                     Помірне підживлення кожні 2 тижні. Багато калію — плодів буде більше! Регулярний полив, але без перезволоження.
@@ -1046,10 +1105,14 @@
             </div>
 
         </div>
+        <div class="cta-container">
+                <a href="https://homesteadinferno.github.io/ghi/sauces.html" class="cta-btn cta-primary">🛒 Замовити суперхот соуси</a>
+                <a href="https://homesteadinferno.github.io/ghi/seedsandseedlings.html" class="cta-btn cta-secondary">🌶️ Каталог насіння</a>
+            </div>
 
         <!-- FOOTER -->
         <div class="footer">
-    <a href="https://homesteadinferno.github.io/homestead-sauces-and-seeds/index.html" class="main-logo-link"> 
+    <a href="https://homesteadinferno.github.io/ghi/index.html" class="main-logo-link"> 
         <img src="homesteadlogo.svg" alt="Homestead" class="logo-image"></a>
             <div class="footer-text">
                 Крафтові соуси • Насіння суперхотів<br>

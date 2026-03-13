@@ -3035,6 +3035,108 @@ body.otherseeds-page header::after {
     color: #fff;
     background: rgba(255, 77, 0, 0.1);
 }
+/* БЛОК БЛОГУ */
+
+.gazette-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 40px;
+    background: #f4f1ea; /* Колір старого паперу */
+    color: #222; /* Темний текст для читабельності */
+    box-shadow: 20px 20px 0px rgba(0,0,0,0.2);
+    border: 1px solid #dcd7c9;
+    font-family: 'serif';
+}
+
+.gazette-header {
+    text-align: center;
+    border-bottom: 4px double #333;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+}
+
+.gazette-header h1 {
+    font-family: 'Zilla Slab', serif;
+    font-size: 48px;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.article-cut {
+    margin-bottom: 50px;
+    padding-bottom: 30px;
+    border-bottom: 1px dashed #999;
+}
+
+.article-cut:last-child {
+    border-bottom: none;
+}
+
+.article-meta {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #666;
+}
+
+.article-title {
+    font-family: 'Zilla Slab', serif;
+    font-size: 28px;
+    margin: 10px 0;
+    color: #000;
+}
+
+.article-columns {
+    column-count: 2; /* Ось тут магія газети! */
+    column-gap: 30px;
+    text-align: justify;
+    line-height: 1.6;
+}
+
+/* Стиль для твоїх "неідеальних" фото */
+.gazette-img {
+    width: 100%;
+    filter: sepia(0.5) contrast(1.2); /* Робить будь-яке фото стильним і старим */
+    margin-bottom: 15px;
+    border: 1px solid #333;
+}
+.gazette-header h1 {
+    font-family: 'Zilla Slab', serif;
+    font-size: 48px;
+    text-transform: uppercase;
+    margin: 0;
+    /* Ефект легкого розмиття, ніби фарба на папері розтеклася */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    letter-spacing: -1px;
+}
+.gazette-nav {
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+    padding: 5px 0;
+    margin: 15px 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.gazette-nav a {
+    text-decoration: none;
+    color: #222;
+    text-transform: uppercase;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.gazette-nav a:hover {
+    background: #000;
+    color: #f4f1ea;
+    padding: 0 5px;
+}
+@media (max-width: 600px) {
+    .article-columns { column-count: 1; }
+}
 /* ╔══════════════════════════════════════════════════════════════╗
    ║  КІНЕЦЬ — v6.0 · 23 секції · динамічні теми                ║
    ╚══════════════════════════════════════════════════════════════╝ */

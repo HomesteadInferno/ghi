@@ -39,7 +39,6 @@ heatScore: "2",
         allowSale: true
     },
 
-    // ПРИКЛАД ДРУГОГО ТОВАРУ
 "carolinareaperred": {
         name: "Carolina Reaper Red",
         searchName: "Кароліна Ріпер, ріпер, кароліна, рипер, Carolina Reaper",
