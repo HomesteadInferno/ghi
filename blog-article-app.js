@@ -114,49 +114,62 @@ class ArticleApp {
 
 
 
-        // Встав це в кінець методу renderArticle()
-const reactionsHTML = `
-    <div class="article-reactions">
-        <h4>Ваш чесний вердикт:</h4>
-        <div class="reaction-group">
-            <button class="react-btn" data-reaction="fire" title="Вогонь!">🔥 <span class="count">0</span></button>
-            <button class="react-btn" data-reaction="base" title="База">😎 <span class="count">0</span></button>
-            <button class="react-btn" data-reaction="trash" title="Ну і лайно...">💩 <span class="count">0</span></button>
-        </div>
-        <p class="reaction-hint">Чи цікава була стаття?</p>
-    </div>
-`;
-document.querySelector('.article-content-full').innerHTML += reactionsHTML;
-this.attachReactionEvents(); // Запускаємо обробку кліків
+        const reactionContainer = document.querySelector('.article-content-full');
+        if (reactionContainer) {
+            const reactionsHTML = `
+                <div class="article-reactions">
+                    <h4>Ваш чесний вердикт:</h4>
+                    <div class="reaction-group">
+                        <button class="react-btn" data-reaction="fire" title="Вогонь!">🔥 <span class="count">0</span></button>
+                        <button class="react-btn" data-reaction="base" title="База">😎 <span class="count">0</span></button>
+                        <button class="react-btn" data-reaction="trash" title="Ну і лайно...">💩 <span class="count">0</span></button>
+                    </div>
+                    <p class="reaction-hint">Чи цікава була стаття?</p>
+                </div>
+            `;
+            reactionContainer.insertAdjacentHTML('beforeend', reactionsHTML);
+        }
+
+        this.attachReactionEvents();
     }
 
     attachReactionEvents() {
-    const postId = this.currentPost.id;
-    const buttons = document.querySelectorAll('.react-btn');
+        if (!this.currentPost || !db) return;
 
-    buttons.forEach(btn => {
-        const type = btn.dataset.reaction;
-        const countSpan = btn.querySelector('.count');
+        const postId = this.currentPost.id;
+        const buttons = document.querySelectorAll('.react-btn');
 
-        // 1. Отримуємо актуальні дані з бази в реальному часі
-        const reactionRef = ref(db, `posts/${postId}/reactions/${type}`);
-        onValue(reactionRef, (snapshot) => {
-            countSpan.textContent = snapshot.val() || 0;
+        buttons.forEach(btn => {
+            const type = btn.dataset.reaction;
+            const countSpan = btn.querySelector('.count');
+            if (!type || !countSpan) return;
+
+            try {
+                const reactionRef = ref(db, `posts/${postId}/reactions/${type}`);
+                onValue(reactionRef, (snapshot) => {
+                    countSpan.textContent = snapshot.val() || 0;
+                }, (error) => {
+                    console.warn('Reaction read blocked:', error?.message || error);
+                    countSpan.textContent = '0';
+                });
+
+                btn.addEventListener('click', () => {
+                    if (localStorage.getItem(`reacted_${postId}_${type}`)) return;
+
+                    runTransaction(reactionRef, (currentCount) => {
+                        return (currentCount || 0) + 1;
+                    }).then(() => {
+                        btn.classList.add('reacted');
+                        localStorage.setItem(`reacted_${postId}_${type}`, true);
+                    }).catch((error) => {
+                        console.warn('Reaction write blocked:', error?.message || error);
+                    });
+                });
+            } catch (error) {
+                console.warn('Reaction setup failed:', error?.message || error);
+            }
         });
-
-        // 2. Обробка кліку
-        btn.addEventListener('click', () => {
-            if (localStorage.getItem(`reacted_${postId}_${type}`)) return; // Захист від накрутки
-
-            runTransaction(reactionRef, (currentCount) => {
-                return (currentCount || 0) + 1;
-            }).then(() => {
-                btn.classList.add('reacted');
-                localStorage.setItem(`reacted_${postId}_${type}`, true);
-            });
-        });
-    });
-}
+    }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // RELATED POSTS
@@ -319,15 +332,19 @@ function shareToFacebook() {
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
 }
 
-function copyLink() {
+function copyLink(event) {
     const url = window.location.href;
     navigator.clipboard.writeText(url).then(() => {
-        const btn = event.target;
+        const btn = event?.target || document.querySelector('.copy');
+        if (!btn) return;
+
         const originalText = btn.textContent;
         btn.textContent = '✅ Скопійовано!';
         setTimeout(() => {
             btn.textContent = originalText;
         }, 2000);
+    }).catch((err) => {
+        console.warn('Copy link failed:', err);
     });
 }
 

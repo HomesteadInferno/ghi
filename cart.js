@@ -16,11 +16,11 @@ const orderRateLimiter = {
 
 const GLOBAL_SETTINGS = {
     // Щоб відкрити магазин: isCategoryLockActive: false або lockedCategories: []
-    isCategoryLockActive: true,
-    lockedCategories: ['sauces', 'seeds', 'otherseeds', 'fresh-peppers', 'poultry'   ],
+    isCategoryLockActive: false,
+    lockedCategories: ['sauces', 'seeds', 'otherseeds', 'fresh-peppers', 'poultry'],
     lockedCategoryTitle: 'Незабаром',
-    lockedCategoryText: 'Розділ готується до старту 🔥',
-    lockedCategoryAlert: '🌶️ Цей розділ ще в розробці. Чекаємо на вас незабаром!'
+    lockedCategoryText: 'Розділ готується до старту восени 2026 🔥',
+    lockedCategoryAlert: '🌶️ Цей розділ ще в розробці. Чекаємо на вас восени 2026!'
 };
 
 // ===== ЄДИНИЙ ПУЛЬТ АКЦІЙ =====
@@ -33,7 +33,7 @@ const SALE_SETTINGS = {
     badgeText: "АКЦІЯ",
     banner: {
         isActive: true,
-        text: "🔥 ГОТУЄМОСЯ ДО ВЕЛИКОГО ЗАПУСКУ 2026!"
+        text: "🔥 ГОТУЄМОСЯ ДО ВЕЛИКОГО ЗАПУСКУ ВОСЕНИ 2026!"
     }
 };
 
@@ -280,12 +280,21 @@ function syncCartPrices(cart, options = {}) {
 
 function renderSalePriceHTML(basePrice, salePrice, suffix = "") {
     if (salePrice < basePrice) {
+        const oldPriceHtml = window.IS_ENGLISH && typeof window.formatEnglishPrice === 'function'
+            ? window.formatEnglishPrice(Number(basePrice))
+            : `${Number(basePrice).toFixed(2)} ₴`;
+        const salePriceHtml = window.IS_ENGLISH && typeof window.formatEnglishPrice === 'function'
+            ? window.formatEnglishPrice(Number(salePrice))
+            : `${Number(salePrice).toFixed(2)} ₴`;
         return `
-            <span class="old-price">${Number(basePrice).toFixed(2)} ₴</span>
-            <span class="sale-price">${Number(salePrice).toFixed(2)} ₴</span>${suffix}
+            <span class="old-price">${oldPriceHtml}</span>
+            <span class="sale-price">${salePriceHtml}</span>${suffix}
         `;
     }
 
+    if (window.IS_ENGLISH && typeof window.formatEnglishPrice === 'function') {
+        return window.formatEnglishPrice(Number(basePrice)) + suffix;
+    }
     return `${Number(basePrice).toFixed(2)} ₴${suffix}`;
 }
 
@@ -486,7 +495,9 @@ function updateCartUI() {
                 const hasDiscount = item.originalPrice && item.originalPrice > item.price;
                 const priceDisplay = hasDiscount 
                     ? `<span style="text-decoration: line-through; opacity: 0.5; font-size: 0.85em; margin-right: 5px;">${parseFloat(item.originalPrice).toFixed(2)} ₴</span>${parseFloat(item.price).toFixed(2)} ₴`
-                    : `${parseFloat(item.price).toFixed(2)} ₴`;
+                    : (window.IS_ENGLISH && typeof window.formatEnglishPrice === 'function'
+                        ? window.formatEnglishPrice(parseFloat(item.price))
+                        : `${parseFloat(item.price).toFixed(2)} ₴`);
                 
                 // Перевірка на існування товару в базі (захист від видалених ID)
                 const productData = (typeof allProducts !== 'undefined' && item.productId) 
@@ -529,7 +540,9 @@ function updateCartUI() {
                         </div>
                     </div>
                     <div class="cart-item-actions">
-                        <span class="cart-item-subtotal">${(parseFloat(item.price) * parseInt(item.qty)).toFixed(2)} ₴</span>
+                        <span class="cart-item-subtotal">${window.IS_ENGLISH && typeof window.formatEnglishPrice === 'function' 
+                            ? window.formatEnglishPrice(parseFloat(item.price) * parseInt(item.qty)) 
+                            : `${(parseFloat(item.price) * parseInt(item.qty)).toFixed(2)} ₴`}</span>
                         <div class="qty-stepper">
                             <button class="qty-btn qty-minus" onclick="changeQty(${index}, -1)" aria-label="Зменшити">−</button>
                             <span class="qty-value">${parseInt(item.qty)}</span>
@@ -546,7 +559,10 @@ function updateCartUI() {
     });
 
     document.querySelectorAll('#final-price, .total-price-display, #cart-total').forEach(priceEl => {
-        priceEl.innerText = `${totalSum.toFixed(2)} ₴`;
+        const totalText = window.IS_ENGLISH && typeof window.formatEnglishPrice === 'function'
+            ? window.formatEnglishPrice(totalSum)
+            : `${totalSum.toFixed(2)} ₴`;
+        priceEl.innerHTML = totalText;
     });
 
     // Ховаємо кнопку замовлення, якщо порожньо
@@ -558,7 +574,7 @@ function updateCartUI() {
 window.openCheckout = function() {
     // ✅ RATE LIMITING: Перевіряємо чи не надто часто клікають на оформлення
     if (typeof RateLimiter !== 'undefined' && !RateLimiter.check('checkout')) {
-        alert('⏱️ Чекайте кілька секунд перед наступним кліком...');
+        alert(window.IS_ENGLISH ? '⏱️ Please wait a few seconds...' : '⏱️ Чекайте кілька секунд перед наступним кліком...');
         return;
     }
 
@@ -578,7 +594,7 @@ window.openCheckout = function() {
         document.getElementById('success-msg').style.display = 'none';
         
         // Автозаповнення збережених даних
-        const fields = ['name', 'phone', 'city', 'branch', 'email', 'delivery', 'city_ref', 'payment'];
+        const fields = ['name', 'phone', 'city', 'branch', 'email', 'delivery', 'city_ref', 'payment', 'country', 'state', 'address', 'zip'];
         fields.forEach(f => {
             const val = localStorage.getItem('saved_' + f);
             if (!val) return;
@@ -589,18 +605,26 @@ window.openCheckout = function() {
                 return;
             }
             
-            // ✅ ФІКС: Заповнюємо видиме поле відділення теж
-            if (f === 'branch') {
+            if (f === 'branch' && !window.IS_ENGLISH) {
                 const branchVisible = document.getElementById('cust-branch-input');
                 if (branchVisible) branchVisible.value = val;
+            }
+
+            if (window.IS_ENGLISH && ['address'].includes(f)) {
+                const el = document.getElementById('cust-' + f);
+                if (el) el.value = val;
+                return;
             }
 
             const el = document.getElementById(f === 'email' ? 'email' : 'cust-' + f);
             if (el) el.value = val;
         });
         updateCartUI();
-        initDeliveryOptions(); // Ініціалізація логіки доставки
-        initPaymentLogic();    // Ініціалізація підказки про оплату
+        
+        if (!window.IS_ENGLISH) {
+            initDeliveryOptions(); // Ініціалізація логіки доставки (тільки для UA)
+            initPaymentLogic();    // Ініціалізація підказки про оплату (тільки для UA)
+        }
     }
 };
 
@@ -1388,20 +1412,247 @@ function generateOrderNumber() {
 
 // === 4. ВІДПРАВКА ЗАМОВЛЕННЯ ===
 window.submitOrder = async function() {
-    // ✅ НОВЕ: Rate limiting
+    // ✅ Rate limiting
     if (!orderRateLimiter.canSubmit()) {
-        alert("Забагато спроб відправки. Зачекайте хвилину.");
+        alert(window.IS_ENGLISH ? "Too many attempts. Please wait a minute." : "Забагато спроб відправки. Зачекайте хвилину.");
         return;
     }
     
-    // Honeypot перевірка (залишається як є)
+    // Honeypot перевірка
     const honeypot = document.getElementById('website_url');
     if (honeypot && honeypot.value !== '') {
         console.warn('🤖 Бот виявлено');
-        alert("Дякуємо за замовлення!");
+        alert(window.IS_ENGLISH ? "Thank you for your order!" : "Дякуємо за замовлення!");
         closeCheckout();
         return;
     }
+    
+    // ═══════════════════════════════════════════════════════════════
+    // VALIDATION: Англійська версія (міжнародні замовлення)
+    // ═══════════════════════════════════════════════════════════════
+    if (window.IS_ENGLISH) {
+        const enFields = {
+            name: document.getElementById('cust-name'),
+            phone: document.getElementById('cust-phone'),
+            email: document.getElementById('email'),
+            country: document.getElementById('cust-country'),
+            city: document.getElementById('cust-city'),
+            state: document.getElementById('cust-state'),
+            address: document.getElementById('cust-address'),
+            zip: document.getElementById('cust-zip'),
+            delivery: document.getElementById('cust-delivery'),
+            payment: document.getElementById('cust-payment'),
+            comment: document.getElementById('cust-comment')
+        };
+
+        let hasError = false;
+        Object.values(enFields).forEach(el => el && el.classList?.remove('input-error'));
+
+        // Перевіряємо обов'язкові поля
+        const required = [
+            { field: enFields.name, label: 'Full Name' },
+            { field: enFields.phone, label: 'Phone' },
+            { field: enFields.email, label: 'Email' },
+            { field: enFields.country, label: 'Country' },
+            { field: enFields.city, label: 'City' },
+            { field: enFields.address, label: 'Street Address' }
+        ];
+
+        const sanitizedData = {};
+        for (const { field, label } of required) {
+            if (!field || !field.value.trim()) {
+                if (field) field.classList.add('input-error');
+                hasError = true;
+            } else {
+                const value = sanitizeInput(field.value.trim(), field === enFields.name ? 50 : 100);
+                field.value = value;
+                sanitizedData[field.id] = value;
+            }
+        }
+
+        // Валідація телефону (міжнародний формат)
+        if (enFields.phone && enFields.phone.value.trim()) {
+            const phoneClean = enFields.phone.value.replace(/[\s\(\)\-]/g, '');
+            if (!phoneClean.startsWith('+') || phoneClean.length < 7) {
+                alert("Please enter a valid phone number with country code (e.g., +1XXXXXXXXX)");
+                enFields.phone.classList.add('input-error');
+                hasError = true;
+            } else {
+                sanitizedData.phone = phoneClean;
+                enFields.phone.value = phoneClean;
+            }
+        }
+
+        // Валідація Email (обов'язковий для міжнародних)
+        if (enFields.email && enFields.email.value.trim()) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(enFields.email.value.trim())) {
+                alert("Please enter a valid email address");
+                enFields.email.classList.add('input-error');
+                hasError = true;
+            } else {
+                sanitizedData.email = sanitizeInput(enFields.email.value.trim(), 100);
+                enFields.email.value = sanitizedData.email;
+            }
+        } else if (!enFields.email?.value.trim()) {
+            enFields.email?.classList.add('input-error');
+            hasError = true;
+        }
+
+        // Перевірка країни
+        if (enFields.country && !enFields.country.value) {
+            enFields.country.classList.add('input-error');
+            hasError = true;
+        }
+
+        if (hasError) {
+            alert("Please fill in all required fields correctly.");
+            return;
+        }
+
+        // --- ВІДПРАВКА МІЖНАРОДНОГО ЗАМОВЛЕННЯ ---
+        const submitBtn = document.querySelector('.checkout-summary .order-btn');
+        if (!submitBtn) { console.error('submitOrder: кнопку order-btn не знайдено'); return; }
+        const originalText = submitBtn.textContent;
+        
+        const orderID = generateOrderNumber();
+        const cartSync = syncCartPrices(getFreshCart(), { save: true });
+        const cart = cartSync.cart;
+        if (cartSync.changed) updateCartUI();
+        
+        const cartError = getCartValidationError(cart);
+        if (cartError) {
+            alert(cartError);
+            updateCartUI();
+            return;
+        }
+
+        const totalSum = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+        const totalUSD = window.formatEnglishPrice ? window.formatEnglishPrice(totalSum) : `$${(totalSum / 41.5).toFixed(2)}`;
+
+        submitBtn.disabled = true;
+        submitBtn.classList.add('btn-loading');
+        submitBtn.textContent = `Sending...`;
+
+        const orderData = {
+            id: orderID,
+            name: sanitizedData['cust-name'] || '',
+            phone: sanitizedData.phone || '',
+            email: sanitizedData.email || '',
+            country: enFields.country?.value || '',
+            country_name: enFields.country?.selectedOptions?.[0]?.text?.replace(/^[^\s]+\s/, '') || enFields.country?.value || '',
+            city: sanitizedData['cust-city'] || '',
+            state: sanitizeInput(enFields.state?.value?.trim() || '', 100),
+            address: sanitizedData['cust-address'] || '',
+            zip: sanitizeInput(enFields.zip?.value?.trim() || '', 20),
+            delivery: enFields.delivery?.value || 'Standard International',
+            payment: 'Online Payment (International)',
+            comment: sanitizeInput(enFields.comment?.value?.trim() || '', 500),
+            secret_token: "summerof26"
+        };
+
+        // Зберігаємо дані
+        localStorage.setItem('saved_name', orderData.name);
+        localStorage.setItem('saved_phone', orderData.phone);
+        localStorage.setItem('saved_email', orderData.email);
+        localStorage.setItem('saved_country', orderData.country);
+        localStorage.setItem('saved_city', orderData.city);
+        localStorage.setItem('saved_state', orderData.state);
+        localStorage.setItem('saved_address', orderData.address);
+        localStorage.setItem('saved_zip', orderData.zip);
+        localStorage.setItem('saved_delivery', orderData.delivery);
+
+        // Формуємо повідомлення
+        const countryDisplay = orderData.country_name || orderData.country;
+        let orderText = `🌍 INTERNATIONAL ORDER: ${orderData.id}\n`;
+        orderText += `👤 ${orderData.name}\n📞 ${orderData.phone}\n📧 ${orderData.email}\n`;
+        orderText += `🌐 Country: ${countryDisplay}\n`;
+        orderText += `📍 ${orderData.city}, ${orderData.state}\n`;
+        orderText += `🏠 ${orderData.address}, ${orderData.zip}\n`;
+        orderText += `🚚 Delivery: ${orderData.delivery}\n`;
+        orderText += `💳 Payment: ${orderData.payment}\n`;
+        if (orderData.comment) orderText += `💬 Comment: ${orderData.comment}\n`;
+        orderText += `\n🛒 Items:\n`;
+        orderText += cart.map(i => `- ${i.name} (${i.price} UAH) x ${i.qty}`).join("\n");
+        orderText += `\n\n💰 TOTAL: ${totalSum.toFixed(2)} UAH (${totalUSD})`;
+        orderText += `\n📦 Shipping to be calculated individually`;
+
+        try {
+            const response = await fetch("https://script.google.com/macros/s/AKfycbyiEM5NnSk-Hg6-ObFifQQf3Xfmt8AjRcqHuinxkueImuEbBUKWl0AlAYUcmn5v0tfm/exec", {
+                method: "POST",
+                mode: "cors",
+                redirect: "follow",
+                cache: 'no-cache',
+                headers: { "Content-Type": "text/plain" },
+                body: JSON.stringify({
+                    id: orderData.id,
+                    message: orderText,
+                    email: orderData.email,
+                    name: orderData.name,
+                    phone: orderData.phone,
+                    delivery: 'International',
+                    city: `${orderData.city}, ${orderData.state}, ${countryDisplay}`,
+                    branch: `${orderData.address}, ZIP: ${orderData.zip}`,
+                    payment: orderData.payment,
+                    country: countryDisplay,
+                    comment: orderData.comment,
+                    total: totalSum,
+                    cart: cart,
+                    order_type: 'INTERNATIONAL',
+                    secret_token: "summerof26"
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status}`);
+            }
+
+            // GA4 tracking
+            if (typeof gtag === 'function') {
+                gtag('event', 'purchase', {
+                    transaction_id: orderData.id,
+                    value: totalSum,
+                    currency: 'UAH',
+                    items: cart.map(item => ({
+                        item_id: item.productId || item.name,
+                        item_name: item.name,
+                        price: item.price,
+                        quantity: item.qty
+                    }))
+                });
+            }
+
+            // Показ успіху
+            document.getElementById('modal-main-content').style.display = 'none';
+            const successMsg = document.getElementById('success-msg');
+            if (successMsg) {
+                successMsg.style.display = 'block';
+                const orderDisplay = document.getElementById('orderNumberDisplay');
+                if (orderDisplay) orderDisplay.innerText = orderData.id;
+            }
+
+            saveCart([]);
+            updateCartUI();
+            console.log("✅ International order sent successfully!");
+
+        } catch (e) {
+            console.error("❌ Error sending international order:", e);
+            if (e.message.includes('Failed to fetch') || e.message.includes('NetworkError')) {
+                alert("Network error. Please check your connection. If the problem persists, contact us via email homestead.inferno@gmail.com 🌐");
+            } else {
+                alert("Server error. Please try again or email us at homestead.inferno@gmail.com 🌶️");
+            }
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('btn-loading');
+            submitBtn.textContent = originalText;
+        }
+        return;
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // VALIDATION: Українська версія
+    // ═══════════════════════════════════════════════════════════════
     
     // Отримуємо поля
     const fields = {
@@ -1415,18 +1666,15 @@ window.submitOrder = async function() {
     };
 
     // 1. СИНХРОНІЗАЦІЯ ПЕРЕД ВАЛІДАЦІЄЮ
-    // Якщо приховане поле порожнє, але у видимому щось є - копіюємо (на випадок ручного вводу)
     if (fields.branch && fields.branchInput && !fields.branch.value.trim()) {
         fields.branch.value = fields.branchInput.value.trim();
     }
 
     let hasError = false;
 
-    // Очищаємо попередні помилки
     Object.values(fields).forEach(el => el && el.classList?.remove('input-error'));
     if (fields.branchInput) fields.branchInput.classList.remove('input-error');
 
-    // ✅ НОВЕ: Sanitize усіх полів
     const sanitizedData = {};
     
     for (let key in fields) {
@@ -1435,9 +1683,7 @@ window.submitOrder = async function() {
         
         const value = field.value.trim();
         
-        // Перевірка на порожнечу
         if (!value) {
-            // Якщо помилка в прихованому полі відділення — підсвічуємо видиме поле
             if (key === 'branch' && fields.branchInput) {
                 fields.branchInput.classList.add('input-error');
             } else if (field.classList) {
@@ -1447,63 +1693,45 @@ window.submitOrder = async function() {
             continue;
         }
         
-        // Sanitize (крім телефону — його перевіряємо окремо)
         if (key !== 'phone') {
             const maxLen = key === 'name' ? 50 : 100;
             sanitizedData[key] = sanitizeInput(value, maxLen);
-            field.value = sanitizedData[key]; // Оновлюємо поле
+            field.value = sanitizedData[key];
         } else {
-            sanitizedData[key] = value; // Телефон перевіряємо нижче
+            sanitizedData[key] = value;
         }
     }
     function validatePhone(phone) {
-    if (!phone) return false;
-    
-    // 1. Очищаємо від усіх зайвих символів
-    const cleaned = phone.replace(/[\s\(\)\-]/g, '');
-    
-    // 2. Перевіряємо формат: <!-- <span>+00000000000</span>--> або 0XXXXXXXXX
-    // Дозволяємо +380, 380, 80 або просто 0 на початку
-    const phoneRegex = /^(?:\+?38)?(?:0|80)\d{9}$/;
-    
-    return phoneRegex.test(cleaned);
-}
-
-function cleanPhone(phone) {
-    if (!phone) return '';
-    
-    // Очищаємо і повертаємо у форматі <!-- <span>+00000000000</span>-->
-    const cleaned = phone.replace(/[\s\(\)\-]/g, '');
-    
-    // Якщо починається з 0 — додаємо +38
-    if (cleaned.startsWith('0')) {
-        return '+38' + cleaned;
+        if (!phone) return false;
+        const cleaned = phone.replace(/[\s\(\)\-]/g, '');
+        const phoneRegex = /^(?:\+?38)?(?:0|80)\d{9}$/;
+        return phoneRegex.test(cleaned);
     }
-    
-    // Якщо вже є +38 — повертаємо як є
-    if (cleaned.startsWith('+38')) {
+
+    function cleanPhone(phone) {
+        if (!phone) return '';
+        const cleaned = phone.replace(/[\s\(\)\-]/g, '');
+        if (cleaned.startsWith('0')) {
+            return '+38' + cleaned;
+        }
+        if (cleaned.startsWith('+38')) {
+            return cleaned;
+        }
         return cleaned;
     }
-    
-    return cleaned;
-}
 
-
-    // ✅ НОВЕ: Покращена валідація телефону
     if (fields.phone) {
         if (!validatePhone(fields.phone.value)) {
             alert("Некоректний номер телефону.\nПриклад: 0951234567 або +380951234567");
             fields.phone.classList.add('input-error');
             hasError = true;
         } else {
-            // Очищаємо і форматуємо телефон
             const cleanedPhone = cleanPhone(fields.phone.value);
             fields.phone.value = cleanedPhone;
             sanitizedData.phone = cleanedPhone;
         }
     }
 
-    // Email валідація (якщо заповнений)
     const emailEl = document.getElementById('email');
     if (emailEl && emailEl.value.trim()) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -1512,14 +1740,12 @@ function cleanPhone(phone) {
             emailEl.classList.add('input-error');
             hasError = true;
         } else {
-            // ✅ НОВЕ: Sanitize email
             sanitizedData.email = sanitizeInput(emailEl.value.trim(), 100);
             emailEl.value = sanitizedData.email;
         }
     }
 
-    // 2. ПЕРЕВІРКА ОБРАНОГО МІСТА (чи вибрано з АПІ)
-    const cityInput = document.getElementById('cust-city'); // Поле міста
+    const cityInput = document.getElementById('cust-city');
     if (cityInput) {
         const cityRef = cityInput.dataset.ref;
         if (currentDeliveryType.includes("Нова Пошта") && (!cityRef || cityRef === "" || cityInput.value.trim() !== lastSelectedCity.trim())) {
@@ -1529,7 +1755,6 @@ function cleanPhone(phone) {
         }
     }
 
-    // 3. ПЕРЕВІРКА ВМІСТУ ВІДДІЛЕННЯ (Захист від неповних даних)
     const branchVal = fields.branch.value.trim().toLowerCase();
     const deliveryType = fields.delivery.value;
 
@@ -1538,10 +1763,8 @@ function cleanPhone(phone) {
         if (fields.branchInput) fields.branchInput.classList.add('input-error');
         hasError = true;
     }
-    // Валідація для Укрпошти: просто перевіряємо, що поле адреси не порожнє
-    else if (deliveryType === "Укрпошта" && branchVal.length < 5) { // Мінімальна довжина адреси
+    else if (deliveryType === "Укрпошта" && branchVal.length < 5) {
         alert("Будь ласка, вкажіть повну адресу доставки для Укрпошти (вулиця, будинок, квартира, індекс) 📮");
-        // Підсвічуємо поле cust-branch-input, яке використовується для адреси
         if (fields.branchInput) fields.branchInput.classList.add('input-error');
         hasError = true;
     }
@@ -1550,11 +1773,9 @@ function cleanPhone(phone) {
         return;
     }
 
-    // --- Далі йде ваш код відправки (він робочий) ---
     const submitBtn = document.querySelector('.checkout-summary .order-btn');
     if (!submitBtn) { console.error('submitOrder: кнопку order-btn не знайдено'); return; }
     const originalText = submitBtn.textContent;
-    // 🔥 ГЕНЕРАТОР КРАСИВИЙ НОМЕР
     const orderID = generateOrderNumber();
     const cartSync = syncCartPrices(getFreshCart(), { save: true });
     const cart = cartSync.cart;
@@ -1571,38 +1792,32 @@ function cleanPhone(phone) {
     const totalSum = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
 
     submitBtn.disabled = true;
-    submitBtn.classList.add('btn-loading'); // Додаємо клас для стилів
+    submitBtn.classList.add('btn-loading');
     submitBtn.textContent = `Відправляємо...`;
 
-    // Збір даних
     const orderData = {
         id: orderID, 
         name: fields.name.value.trim(),
         phone: fields.phone.value.trim(),
         delivery: fields.delivery.value.trim(),
         payment: fields.payment.value.trim(),
-        city: fields.city.value.trim(), // Місто завжди беремо з cust-city
-        // Для Укрпошти branch буде повною адресою, для НП - відділенням/адресою
+        city: fields.city.value.trim(),
         branch: (deliveryType === "Укрпошта")
-            ? fields.branchInput.value.trim() // Для Укрпошти беремо з видимого поля
-            : fields.branch.value.trim(), // Для НП беремо з прихованого (або видимого, якщо кур'єр)
-
-
+            ? fields.branchInput.value.trim()
+            : fields.branch.value.trim(),
         email: document.getElementById('email')?.value.trim() || "-",
         comment: (document.getElementById('cust-comment')?.value.trim() || "").substring(0, 500),
         secret_token: "summerof26"
     };
 
-    // Зберігаємо в пам'ять для наступного разу
     localStorage.setItem('saved_name', orderData.name);
     localStorage.setItem('saved_phone', orderData.phone);
     localStorage.setItem('saved_delivery', orderData.delivery);
     localStorage.setItem('saved_payment', orderData.payment);
-    localStorage.setItem('saved_city', orderData.city); // Зберігаємо місто
+    localStorage.setItem('saved_city', orderData.city);
     localStorage.setItem('saved_city_ref', fields.city.dataset.ref || '');
     localStorage.setItem('saved_branch', orderData.branch);
 
-    /// 4. Формуємо повідомлення для Telegram
     let orderText = `🌶️ НОВЕ ЗАМОВЛЕННЯ: ${orderData.id}\n`;
     orderText += `👤 ${orderData.name}\n📞 ${orderData.phone}\n`;
     orderText += `🚚 Доставка: ${orderData.delivery}\n`;
@@ -1626,24 +1841,22 @@ function cleanPhone(phone) {
                 message: orderText,       
                 email: orderData.email,   
                 name: orderData.name,
-                phone: orderData.phone,    // Додав телефон (зайвим не буде)
+                phone: orderData.phone,
                 delivery: orderData.delivery,
                 city: orderData.city,
                 branch: orderData.branch,
                 payment: orderData.payment,
                 comment: orderData.comment,
-                total: totalSum,           // Додав суму окремим полем для логів
-                cart: cart,                // Передаємо масив товарів для чека в імейлі
+                total: totalSum,
+                cart: cart,
                 secret_token: "summerof26"
             })
         });
 
-        // Якщо ми тут і mode: "cors", значить запит пройшов успішно
         if (!response.ok) {
             throw new Error(`Сервер повернув помилку: ${response.status}`);
         }
 
-        // Відстеження успішної покупки в Google Analytics 4
         if (typeof gtag === 'function') {
             gtag('event', 'purchase', {
                 transaction_id: orderData.id,
@@ -1658,7 +1871,6 @@ function cleanPhone(phone) {
             });
         }
 
-        // Показ екрану успіху
         document.getElementById('modal-main-content').style.display = 'none';
         const successMsg = document.getElementById('success-msg');
         if (successMsg) {
@@ -1667,7 +1879,6 @@ function cleanPhone(phone) {
             if (orderDisplay) orderDisplay.innerText = orderData.id;
         }
 
-        // Показ реквізитів, якщо обрана онлайн оплата
         const paymentDetails = document.getElementById('payment-details-success');
         if (paymentDetails) {
             if (orderData.payment === "Онлайн оплата") {
@@ -1701,7 +1912,6 @@ function cleanPhone(phone) {
 
     } catch (e) {
         console.error("Помилка відправки:", e);
-        // Специфічна перевірка для CORS помилок, які часто виникають з Google Scripts
         if (e.message.includes('Failed to fetch') || e.message.includes('NetworkError')) {
             alert("Помилка мережі або CORS. Перевірте з'єднання. Якщо проблема повторюється — напишіть нам у месенджер! 🌐");
         } else {
@@ -1709,7 +1919,7 @@ function cleanPhone(phone) {
         }
     } finally {
         submitBtn.disabled = false;
-        submitBtn.classList.remove('btn-loading'); // Прибираємо клас затухання
+        submitBtn.classList.remove('btn-loading');
         submitBtn.textContent = originalText;
     }
 };

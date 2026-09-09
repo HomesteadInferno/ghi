@@ -2,14 +2,22 @@ import { sanitize } from './utils/sanitizer.js';
 
 const safeText = (value) => sanitize.text(String(value ?? ''));
 
+const isEnglishCatalog = Boolean(window.IS_ENGLISH);
+
 const CATEGORY_PAGES = {
     seeds: {
         url: 'seedsandseedlings.html',
-        navLabel: '🌶️ Насіння суперхотів',
-        title: 'Насіння гострих перців (Superhots)',
+        navLabel: isEnglishCatalog ? '🌶️ Superhot seeds' : '🌶️ Насіння суперхотів',
+        title: isEnglishCatalog ? 'Hot pepper seeds (Superhots)' : 'Насіння гострих перців (Superhots)',
         description: '',
-        filterTitle: 'Рівень вогню:',
-        filters: [
+        filterTitle: isEnglishCatalog ? 'Heat level:' : 'Рівень вогню:',
+        filters: isEnglishCatalog ? [
+            ['all', 'All'],
+            ['1', '🔥'],
+            ['2', '🔥🔥'],
+            ['3', '🔥🔥🔥'],
+            ['4', '☠️']
+        ] : [
             ['all', 'Всі'],
             ['1', '🔥'],
             ['2', '🔥🔥'],
@@ -19,11 +27,16 @@ const CATEGORY_PAGES = {
     },
     sauces: {
         url: 'sauces.html',
-        navLabel: '🔥 Крафтові Соуси',
-        title: 'Крафтові соуси INFERNO',
-        description: 'Малі партії соусів із власних перців: від лагідного тепла до повного вогню.',
-        filterTitle: 'Рівень гостроти:',
-        filters: [
+        navLabel: isEnglishCatalog ? '🔥 Craft sauces' : '🔥 Крафтові Соуси',
+        title: isEnglishCatalog ? 'INFERNO craft sauces' : 'Крафтові соуси INFERNO',
+        description: isEnglishCatalog ? 'Small-batch sauces made from our own peppers: from gentle warmth to total fire.' : 'Малі партії соусів із власних перців: від лагідного тепла до повного вогню.',
+        filterTitle: isEnglishCatalog ? 'Heat level:' : 'Рівень гостроти:',
+        filters: isEnglishCatalog ? [
+            ['all', 'All'],
+            ['1', '🔥 Mild'],
+            ['2', '🔥🔥 Hot'],
+            ['3', '🔥🔥🔥 Infernal']
+        ] : [
             ['all', 'Всі'],
             ['1', '🔥 Лагідні'],
             ['2', '🔥🔥 Гарячі'],
@@ -32,11 +45,17 @@ const CATEGORY_PAGES = {
     },
     otherseeds: {
         url: 'otherseeds.html',
-        navLabel: '🌱 Насіння овочів',
-        title: 'Насіння овочів',
+        navLabel: isEnglishCatalog ? '🌱 Vegetable seeds' : '🌱 Насіння овочів',
+        title: isEnglishCatalog ? 'Vegetable seeds' : 'Насіння овочів',
         description: '',
-        filterTitle: 'Тип овочів:',
-        filters: [
+        filterTitle: isEnglishCatalog ? 'Vegetable type:' : 'Тип овочів:',
+        filters: isEnglishCatalog ? [
+            ['all', 'All'],
+            ['1', '🍅 Tomatoes'],
+            ['2', '🫑 Peppers'],
+            ['3', '🥒 Cucumbers'],
+            ['4', 'Other seeds']
+        ] : [
             ['all', 'Всі'],
             ['1', '🍅 Помідори'],
             ['2', '🫑 Перець'],
@@ -46,11 +65,15 @@ const CATEGORY_PAGES = {
     },
     'fresh-peppers': {
         url: 'fresh-peppers.html',
-        navLabel: '🌶️ Врожай Пекла',
-        title: 'Врожай Пекла: свіжі та сушені перці',
-        description: 'Тут з\'являтимуться плоди, які ми збираємо на власних грядках. Свіжі суперхоти будуть доступні восени 2026.',
-        filterTitle: 'Тип продукту:',
-        filters: [
+        navLabel: isEnglishCatalog ? '🌶️ Inferno harvest' : '🌶️ Врожай Пекла',
+        title: isEnglishCatalog ? 'Inferno harvest: fresh and dried peppers' : 'Врожай Пекла: свіжі та сушені перці',
+        description: isEnglishCatalog ? 'Fresh produce from our own beds will appear here. Fresh superhots will be available in autumn 2026.' : 'Тут з\'являтимуться плоди, які ми збираємо на власних грядках. Свіжі суперхоти будуть доступні восени 2026.',
+        filterTitle: isEnglishCatalog ? 'Product type:' : 'Тип продукту:',
+        filters: isEnglishCatalog ? [
+            ['all', 'All'],
+            ['1', '🥗 Fresh'],
+            ['2', '💨 Dried']
+        ] : [
             ['all', 'Всі'],
             ['1', '🥗 Свіжі'],
             ['2', '💨 Сушені']
@@ -58,11 +81,15 @@ const CATEGORY_PAGES = {
     },
     poultry: {
         url: 'orpington-eggs.html',
-        navLabel: '🥚 Яйця ферми',
-        title: 'Інкубаційні яйця та яйця для вживання',
-        description: 'Невеликі фермерські партії: інкубаційні яйця породистої птиці та свіжі яйця для кухні.',
-        filterTitle: 'Тип яєць:',
-        filters: [
+        navLabel: isEnglishCatalog ? '🥚 Farm eggs' : '🥚 Яйця ферми',
+        title: isEnglishCatalog ? 'Incubation eggs and table eggs' : 'Інкубаційні яйця та яйця для вживання',
+        description: isEnglishCatalog ? 'Small farm batches: hatching eggs and fresh eggs for the kitchen.' : 'Невеликі фермерські партії: інкубаційні яйця породистої птиці та свіжі яйця для кухні.',
+        filterTitle: isEnglishCatalog ? 'Egg type:' : 'Тип яєць:',
+        filters: isEnglishCatalog ? [
+            ['all', 'All'],
+            ['1', '🐣 Hatching'],
+            ['2', '🍳 Table eggs']
+        ] : [
             ['all', 'Всі'],
             ['1', '🐣 Інкубаційні'],
             ['2', '🍳 Для вживання']
@@ -79,7 +106,24 @@ const HEAT_LEVELS = {
     "4": { shu: "1M-2.2M+", width: "100%" }
 };
 
-const SCOVILLE_DATA = {
+const SCOVILLE_HELP = isEnglishCatalog ? {
+    title: 'What do these numbers mean?',
+    text: 'SHU means Scoville Heat Units. The higher the number, the more capsaicin and the stronger the heat.',
+    linkLabel: 'Scoville guide',
+    link: ''
+} : {
+    title: 'Що означають ці цифри?',
+    text: 'SHU — це одиниці гостроти за шкалою Сковілла. Чим більше число, тим більше капсаїцину й сильніше пече.',
+    linkLabel: 'Читати гід по Сковіллу',
+    link: 'blog-article.html?id=scoville-scale-explained'
+};
+
+const SCOVILLE_DATA = isEnglishCatalog ? {
+    "1": { name: "Ancho, Aji Melocoton", shu: "~1,000-50,000", status: "Spicy aroma 🌿", color: "#4C9900" },
+    "2": { name: "Sugar Rush, Habanero Dominica", shu: "50,000-577,000", status: "Serious challenge! 🔥", color: "#ffcc00" },
+    "3": { name: "Ghost, 7 Pot", shu: "577,000-1,000,000+", status: "Blazing ghost! 🔥🔥", color: "#ff4d00" },
+    "4": { name: "Scorpion, Carolina Reaper", shu: "1,000,000-2,200,000+", status: "TOTAL ERUPTION ☠️", color: "#8b0000" }
+} : {
     "1": { name: "Ancho, Aji Melocoton", shu: "~1,000-50,000", status: "Пряний аромат 🌿", color: "#4C9900" },
     "2": { name: "Sugar Rush, Habanero Dominica", shu: "50,000-577,000", status: "Серйозний виклик! 🔥", color: "#ffcc00" },
     "3": { name: "Ghost, 7 Pot", shu: "577,000-1,000,000+", status: "Палаючий привид! 🔥🔥", color: "#ff4d00" },
@@ -179,6 +223,10 @@ function getMiniSpecsHTML(product) {
     `;
 }
 
+function hasScovilleInfo(product) {
+    return product.category === 'sauces' || /\bSHU\b/i.test(product.heatLevel || '');
+}
+
 function getTagsHTML(product) {
     let tagsHTML = '';
     if (product.isNew) tagsHTML += '<span class="product-tag">NEW</span>';
@@ -189,6 +237,7 @@ function getTagsHTML(product) {
 
 function renderProductCard(id, product) {
     const currentHeat = HEAT_LEVELS[product.heatScore] || { shu: "Unknown", width: "0%" };
+    const hasHeatInfo = hasScovilleInfo(product);
     const isInStock = product.inStock !== false;
     const descriptionText = getDescriptionText(product);
     const mutedImageClass = isInStock ? '' : ' muted-product-img';
@@ -200,8 +249,16 @@ function renderProductCard(id, product) {
             <div class="img-container">
                 <img src="${safeText(product.images[0])}" alt="${safeText(product.name)}" loading="lazy" class="${mutedImageClass}">
 
-                ${(product.category === 'seeds' || product.category === 'sauces') ? `
+                ${hasHeatInfo ? `
                     <div class="scoville-overlay heat-${safeText(product.heatScore || 'unknown')}">
+                        <button class="scoville-help" type="button" aria-label="${safeText(SCOVILLE_HELP.title)}" aria-describedby="scoville-help-${safeText(id)}" onclick="event.stopPropagation(); event.preventDefault(); this.classList.toggle('is-open'); return false;">
+                            <span aria-hidden="true">?</span>
+                            <span class="scoville-help-tooltip" id="scoville-help-${safeText(id)}" role="tooltip">
+                                <strong>${safeText(SCOVILLE_HELP.title)}</strong>
+                                <span>${safeText(SCOVILLE_HELP.text)}</span>
+                                ${SCOVILLE_HELP.link ? `<span class="scoville-help-link" role="link" tabindex="0" onclick="event.stopPropagation(); event.preventDefault(); window.location.href='${SCOVILLE_HELP.link}'; return false;" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.click(); }">${safeText(SCOVILLE_HELP.linkLabel)} <span aria-hidden="true">↗</span></span>` : ''}
+                            </span>
+                        </button>
                         <div class="shu-value">${safeText(currentHeat.shu)}</div>
                         <div class="scoville-bar-container">
                             <div class="scoville-bar-fill" style="width: ${safeText(currentHeat.width)}"></div>
@@ -225,7 +282,9 @@ function renderProductCard(id, product) {
                     <p class="card-price${mutedPriceClass}"
                        data-base-price="${safeText(product.price)}"
                        data-allow-sale="${product.allowSale === true ? 'true' : 'false'}">
-                        ${safeText(product.price)} ₴
+                        ${window.IS_ENGLISH && typeof window.formatEnglishPrice === 'function' 
+                            ? window.formatEnglishPrice(product.price)
+                            : `${safeText(product.price)} ₴`}
                     </p>
                 </div>
                 ${descriptionText ? `<p class="product-description-short">${safeText(descriptionText)}</p>` : '<p class="product-description-short is-empty"></p>'}

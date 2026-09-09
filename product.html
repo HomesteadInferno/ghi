@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
@@ -152,7 +152,17 @@
                 </div>
 
                <div class="info-col">
-    <span class="heat-tag" id="product-heat"></span>
+    <div class="product-heat-wrap" id="product-heat-wrap">
+        <span class="heat-tag" id="product-heat"></span>
+        <button class="product-heat-help" type="button" aria-label="Що означають цифри SHU?" aria-describedby="product-heat-help-text">
+            <span aria-hidden="true">?</span>
+            <span class="product-heat-help-tooltip" id="product-heat-help-text" role="tooltip">
+                <strong>Що означають ці цифри?</strong>
+                <span>SHU — одиниці гостроти за шкалою Сковілла. Чим більше число, тим більша гострота.</span>
+                <a href="blog-article.html?id=scoville-scale-explained">Як розуміти шкалу Сковілла?<span aria-hidden="true">↗</span></a>
+            </span>
+        </button>
+    </div>
     <h1 id="p-name">Завантаження...</h1>
     <div id="p-desc"></div>
     <p id="product-tips" style="display: none;"><i></i></p>
@@ -250,6 +260,6 @@
 <script src="product-page.js"></script>
 <script src="theme-switcher.js"></script>
 <script type="module" src="modules/init.js"></script>
-</body>
+<script src="language-switcher.js"></script></body>
 
 </html>

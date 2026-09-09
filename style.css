@@ -221,9 +221,15 @@ body.poultry-page {
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    §2.1  🖱️ КРАФТОВИЙ СКРОЛБАР
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-::-webkit-scrollbar {
-    width: 8px;
+html {
+    scrollbar-width: none;
 }
+
+html::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
 ::-webkit-scrollbar-track {
     background: var(--bg-dark);
 }
@@ -1295,11 +1301,108 @@ body.has-sale-banner {
     transition: opacity 0.3s ease;
     padding: 15px;
     z-index: 2;
-    pointer-events: none;
+    pointer-events: auto;
 }
 
-.product-card:hover .scoville-overlay {
+.product-card:hover .scoville-overlay,
+.product-card:focus-within .scoville-overlay {
     opacity: 1;
+}
+
+.scoville-help {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    background: rgba(12, 12, 12, 0.58);
+    color: #fff;
+    font: 700 15px/1 var(--font-heading, sans-serif);
+    cursor: help;
+    z-index: 4;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.scoville-help:hover,
+.scoville-help:focus-visible,
+.scoville-help.is-open {
+    background: var(--primary-color);
+    border-color: rgba(255,255,255,0.75);
+    outline: none;
+    transform: scale(1.08);
+}
+
+.scoville-help::after,
+.product-heat-help::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 100%;
+    height: 12px;
+}
+
+.scoville-help-tooltip {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    width: min(250px, calc(100vw - 42px));
+    padding: 14px 15px;
+    display: grid;
+    gap: 7px;
+    border: 1px solid rgba(255, 166, 82, 0.48);
+    border-radius: 10px;
+    background: rgba(20, 14, 11, 0.97);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.42), 0 0 20px rgba(255, 120, 35, 0.12);
+    color: #fff;
+    font: 400 12px/1.45 var(--font-body, sans-serif);
+    text-align: left;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-5px);
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+}
+
+.scoville-help-tooltip::before,
+.product-heat-help-tooltip::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    right: 0;
+    width: 100%;
+    height: 12px;
+}
+
+.scoville-help-tooltip strong {
+    color: #ffb15c;
+    font-size: 13px;
+}
+
+.scoville-help-link {
+    color: #ffd19e;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+}
+
+.scoville-help:hover .scoville-help-tooltip,
+.scoville-help:focus-visible .scoville-help-tooltip,
+.scoville-help.is-open .scoville-help-tooltip {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .scoville-help,
+    .scoville-help-tooltip {
+        transition: none;
+    }
 }
 
 /* Текст SHU */
@@ -1866,6 +1969,77 @@ main.product-page {
     letter-spacing: 1px;
     width: fit-content;
     box-shadow: 0 0 12px var(--accent-shadow);
+}
+
+.product-heat-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    z-index: 5;
+}
+
+.product-heat-help {
+    position: relative;
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 50%;
+    background: rgba(20, 14, 11, 0.8);
+    color: var(--primary-color);
+    font: 700 13px/1 var(--font-heading, sans-serif);
+    cursor: help;
+}
+
+.product-heat-help:hover,
+.product-heat-help:focus-visible {
+    background: var(--primary-color);
+    border-color: rgba(255,255,255,0.75);
+    color: #fff;
+    outline: none;
+}
+
+.product-heat-help-tooltip {
+    position: absolute;
+    top: 34px;
+    right: 0;
+    width: min(270px, calc(100vw - 42px));
+    display: grid;
+    gap: 7px;
+    padding: 14px 15px;
+    border: 1px solid rgba(255, 166, 82, 0.48);
+    border-radius: 10px;
+    background: rgba(20, 14, 11, 0.98);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.42), 0 0 20px rgba(255, 120, 35, 0.12);
+    color: #fff;
+    font: 400 12px/1.45 var(--font-body, sans-serif);
+    text-align: left;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-5px);
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+}
+
+.product-heat-help-tooltip strong {
+    color: #ffb15c;
+    font-size: 13px;
+}
+
+.product-heat-help-tooltip a {
+    color: #ffd19e;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.product-heat-help:hover .product-heat-help-tooltip,
+.product-heat-help:focus-visible .product-heat-help-tooltip {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
 }
 
 .price-big,

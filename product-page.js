@@ -254,6 +254,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Рівень гостроти (якщо є)
         const heatTag = document.getElementById('product-heat');
+        const heatWrap = document.getElementById('product-heat-wrap');
+        const hasHeatInfo = product.category === 'sauces' || /\bSHU\b/i.test(product.heatLevel || '');
+        if (heatWrap) heatWrap.style.display = hasHeatInfo ? 'flex' : 'none';
         if (heatTag && product.heatLevel) {
             heatTag.innerText = product.heatLevel;
         }
@@ -340,7 +343,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="side-rec-card">
                             <img src="${item.images[0]}" style="width: 100%; height: 120px; object-fit: cover; border: 1px solid #33251e; margin-bottom: 8px;">
                             <h4 style="margin: 0; font-size: 13px; line-height: 1.2; opacity: 0.9;">${item.name}</h4>
-                            <div class="side-rec-price">${item.price.toFixed(2)} ₴</div>
+                            <div class="side-rec-price">${window.IS_ENGLISH && typeof window.formatEnglishPrice === 'function' 
+                                ? window.formatEnglishPrice(item.price) 
+                                : `${item.price.toFixed(2)} ₴`}</div>
                         </div>
                     </a>
                 `;
@@ -425,7 +430,9 @@ function renderSeedVersionSelector(product, productId) {
             : version.price;
         const displayPriceHtml = typeof renderSalePriceHTML === 'function'
             ? renderSalePriceHTML(version.price, salePrice)
-            : `${version.price} ₴`;
+            : (window.IS_ENGLISH && typeof window.formatEnglishPrice === 'function'
+                ? window.formatEnglishPrice(version.price)
+                : `${version.price} ₴`);
 
         html += `
             <button 
@@ -453,10 +460,10 @@ function renderSeedVersionSelector(product, productId) {
                 <div class="info-icon">ℹ️</div>
                 <div class="info-text">
                     <strong>Вільне запилення (Open Pollinated):</strong> Вільне запилення. Насіння зібране з рослин, 
-                    які вільно запилювалися (вітром, комахами). Може бути незначна варіація у потомстві.
+                    які вільно запилювалися (вітром, комахами). Може бути варіація у потомстві.
                     <br><br>
                     <strong>Ізольоване (Isolated):</strong> Контрольоване запилення. Рослини ізольовані під час цвітіння, 
-                    що гарантує 100% чистоту сорту. Преміум якість.
+                    що гарантує чистоту сорту. Преміум якість.
                 </div>
             </div>
         </div>
@@ -513,7 +520,7 @@ function updatePriceDisplay(product, version) {
     
     // Визначаємо підпис ціни залежно від категорії
     let priceLabel = '/ шт.';
-    if (product.category === 'seeds') priceLabel = '/ 5 шт.';
+    if (product.category === 'seeds') priceLabel = '/ 8 шт.';
     else if (product.category === 'otherseeds') priceLabel = '/ 15 шт.';
     else if (product.category === 'sauces') priceLabel = '/ пляшка';
 
@@ -525,7 +532,9 @@ function updatePriceDisplay(product, version) {
     priceEl.setAttribute('data-val', version.price);
     priceEl.innerHTML = typeof renderSalePriceHTML === 'function'
         ? renderSalePriceHTML(version.price, finalPrice, priceSuffix)
-        : `${version.price.toFixed(2)} ₴${priceSuffix}`;
+        : (window.IS_ENGLISH && typeof window.formatEnglishPrice === 'function'
+            ? window.formatEnglishPrice(version.price, priceSuffix)
+            : `${version.price.toFixed(2)} ₴${priceSuffix}`);
 
     return finalPrice;
 }
